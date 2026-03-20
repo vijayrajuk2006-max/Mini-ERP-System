@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini ERP System</title>
+
+<style>
+:root{
+  --primary:#2563eb;
+  --success:#16a34a;
+  --warning:#f59e0b;
+  --dark:#111827;
+  --light:#f3f4f6;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Segoe UI', sans-serif;
+}
+
+body{
+  display:flex;
+  background:var(--light);
+  min-height:100vh;
+}
+
+/* Sidebar */
+.sidebar{
+  width:230px;
+  background:var(--dark);
+  color:white;
+  padding:25px;
+}
+
+.sidebar h2{
+  margin-bottom:30px;
+  color:var(--primary);
+}
+
+.sidebar a{
+  display:block;
+  margin-bottom:15px;
+  color:#d1d5db;
+  text-decoration:none;
+  cursor:pointer;
+}
+
+.sidebar a:hover{
+  color:white;
+}
+
+/* Main */
+.main{
+  flex:1;
+  padding:30px;
+}
+
+.section{
+  display:none;
+}
+
+.active{
+  display:block;
+}
+
+/* Cards */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:20px;
+  margin-bottom:30px;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:8px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Inputs */
+input{
+  padding:8px;
+  margin:5px;
+  border:1px solid #ddd;
+  border-radius:5px;
+}
+
+button{
+  padding:8px 12px;
+  background:var(--primary);
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+/* Lists */
+.list{
+  margin-top:15px;
+}
+
+.item{
+  background:white;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:6px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+.completed{
+  text-decoration:line-through;
+  color:gray;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>ERP System</h2>
+  <a onclick="showSection('dashboard')">Dashboard</a>
+  <a onclick="showSection('employees')">Employees</a>
+  <a onclick="showSection('tasks')">Tasks</a>
+</div>
+
+<div class="main">
+
+<!-- Dashboard -->
+<div id="dashboard" class="section active">
+
+<h1>Dashboard</h1>
+
+<div class="cards">
+  <div class="card">
+    <h3>Total Employees</h3>
+    <h2 id="empCount">0</h2>
+  </div>
+  <div class="card">
+    <h3>Total Tasks</h3>
+    <h2 id="taskCount">0</h2>
+  </div>
+</div>
+
+</div>
+
+<!-- Employees -->
+<div id="employees" class="section">
+
+<h1>Employees</h1>
+
+<input type="text" id="empName" placeholder="Employee Name">
+<button onclick="addEmployee()">Add</button>
+
+<div class="list" id="empList"></div>
+
+</div>
+
+<!-- Tasks -->
+<div id="tasks" class="section">
+
+<h1>Tasks</h1>
+
+<input type="text" id="taskName" placeholder="Task Name">
+<button onclick="addTask()">Add</button>
+
+<div class="list" id="taskList"></div>
+
+</div>
+
+</div>
+
+<script>
+
+let employees = [];
+let tasks = [];
+
+function showSection(id){
+document.querySelectorAll(".section").forEach(sec=>sec.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+/* Employees */
+function addEmployee(){
+const name=document.getElementById("empName").value;
+
+if(!name) return;
+
+employees.push(name);
+renderEmployees();
+document.getElementById("empName").value="";
+}
+
+function renderEmployees(){
+const list=document.getElementById("empList");
+list.innerHTML="";
+
+employees.forEach((e,i)=>{
+list.innerHTML += `<div class="item">${e}</div>`;
+});
+
+document.getElementById("empCount").innerText = employees.length;
+}
+
+/* Tasks */
+function addTask(){
+const name=document.getElementById("taskName").value;
+
+if(!name) return;
+
+tasks.push({name,done:false});
+renderTasks();
+document.getElementById("taskName").value="";
+}
+
+function renderTasks(){
+const list=document.getElementById("taskList");
+list.innerHTML="";
+
+tasks.forEach((t,i)=>{
+list.innerHTML += `
+<div class="item ${t.done?'completed':''}" onclick="toggleTask(${i})">
+${t.name}
+</div>`;
+});
+
+document.getElementById("taskCount").innerText = tasks.length;
+}
+
+function toggleTask(i){
+tasks[i].done = !tasks[i].done;
+renderTasks();
+}
+
+</script>
+
+</body>
+</html>
